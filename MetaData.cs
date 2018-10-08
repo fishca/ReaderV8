@@ -283,14 +283,393 @@ namespace MetaRead
         public Class f_class;
 
         public DefaultValueType defaultvaluetype;
+
+        /* пока непонятно на что заменить
+        union
+	    {
+		  bool dv_bool;
+          int dv_number;
+          String* dv_string;
+          char dv_date[7];
+          MetaType* dv_type;
+          MetaValue* dv_enum;
+        }
+        */
+
+        public MetaProperty(MetaType _owner, String _name, String _ename) : base(_name, _ename)
+        {
+            owner = _owner;
+        }
+        public MetaProperty(MetaType _owner, Tree tr)
+        {
+            owner = _owner;
+        }
+
+        public void FillTypes()
+        { }
+
+        public List<MetaType> Types
+        {
+            get { return ftypes; }
+        }
+
+        public MetaType GetOwner()
+        {
+            return owner;
+        }
+
+        public bool Predefined
+        {
+            get
+            {
+                return fpredefined; 
+            }
+        }
+
+        public ExportType Exporttype
+        {
+            get { return fexporttype; }
+        }
+
+        public Class _class
+        {
+            get { return f_class; }
+        }
+
+
     }
 
-    public class Class : MetaBase
+    public class Value1C_metaobj
     {
     }
 
+    //---------------------------------------------------------------------------
+    // Объект метаданных
+    public class MetaObject : MetaBase
+    {
+        public String ffullname;
+        public String fefullname;
+        public Guid fuid;
+        public Value1C_metaobj fvalue;
 
-    public class MetaGeneratedType : MetaBase { }
+        public static SortedDictionary<Guid, MetaObject> map;
+        public static SortedDictionary<String, MetaObject> smap;
+
+        public MetaObject(Guid _uid, Value1C_metaobj _value)
+        {
+            fuid = _uid;
+            fvalue = _value;
+        }
+
+        public MetaObject(Guid _uid, Value1C_metaobj _value, String _name, String _ename) : base(_name,_ename)
+        {
+            fuid = _uid;
+            fvalue = _value;
+        }
+
+        void SetFullName(String _fullname)
+        {
+            ffullname = _fullname;
+        }
+
+        void SetEfullName(String _efullname)
+        {
+            fefullname = _efullname;
+        }
+
+        public String FullName
+        {
+            get
+            {
+                return ffullname;
+            }
+        }
+
+        public String EfullName
+        {
+            get
+            {
+                return fefullname;
+            }
+        }
+
+        public Guid UID
+        {
+            get
+            {
+                return fuid;
+            }
+        }
+
+        // Value1C_metaobj* value
+        public Value1C_metaobj Value
+        {
+            get
+            {
+                return fvalue;
+            }
+        }
+
+        public String GetFullName(bool english = false)
+        {
+            return english ? fefullname : ffullname;
+        }
+
+
+    }
+
+    //---------------------------------------------------------------------------
+    // Генерируемый тип
+    public class MetaGeneratedType : MetaBase
+    {
+        public bool fwoprefix; // Признак "Без префикса"
+
+        public bool Woprefix
+        {
+            get { return fwoprefix; }
+        }
+
+        public MetaGeneratedType(String _name, String _ename, bool _pref = false) : base(_name, _ename)
+        {
+            fwoprefix = _pref;
+        }
+
+        public MetaGeneratedType(Tree tr)
+        { }
+
+    }
+
+    //---------------------------------------------------------------------------
+    // Право
+    public class MetaRight : MetaBase
+    {
+        public Guid fuid;
+        public Version1C fver1C;
+
+        public static SortedDictionary<Guid, MetaRight> map;
+        public static SortedDictionary<String, MetaRight> smap;
+
+        public MetaRight(Tree tr)
+        { }
+
+        public static MetaRight GetRight(Guid _uid)
+        {
+            return null;
+        }
+
+        public static MetaRight GetRight(String _name)
+        {
+            return null;
+        }
+
+        public Guid UID
+        {
+            get
+            {
+                return fuid;
+            }
+        }
+
+        public Version1C Ver1C
+        {
+            get
+            {
+                return fver1C;
+            }
+        }
+
+    }
+
+    //---------------------------------------------------------------------------
+    // Стандартный реквизит
+    public class MetaStandartAttribute : MetaBase
+    {
+        public int fvalue;
+        public bool fcount;
+        public int fvaluemax;
+        public Guid fuid;
+
+        public MetaStandartAttribute(String _name, String _ename, bool _count = false) : base(_name, _ename)
+        {
+            fcount = _count;
+        }
+        public MetaStandartAttribute(Tree tr)
+        { }
+
+        public int Value
+        {
+            get
+            {
+                return fvalue; 
+            }
+        }
+        public bool Count
+        {
+            get
+            {
+                return fcount;
+            }
+        }
+        public int ValueMax
+        {
+            get
+            {
+                return fvaluemax;
+            }
+        }
+        public Guid UID
+        {
+            get
+            {
+                return fuid;
+            }
+        }
+
+    }
+
+    //---------------------------------------------------------------------------
+    // Стандартная табличная часть
+    public class MetaStandartTabularSection : MetaBase
+    {
+        public int fvalue;
+        public Class f_class;
+
+        public Guid class_uid;
+
+        public static List<MetaStandartTabularSection> list;
+
+        public MetaStandartTabularSection(String _name, String _ename) : base(_name, _ename)
+        {
+            f_class = null;
+            class_uid = new Guid(); /* Пустой УИД */
+        }
+        public MetaStandartTabularSection(Tree tr)
+        { }
+
+        public int Value
+        {
+            get
+            {
+                return fvalue;
+            }
+        }
+        public Class _class
+        {
+            get
+            {
+                return f_class;
+            }
+            set
+            {
+                f_class = value;
+            }
+        }
+
+    }
+
+    //---------------------------------------------------------------------------
+    // Параметры классов
+    public class ClassParameter
+    {
+        public String fname;
+        public static SortedDictionary<String, ClassParameter> map;
+
+        public ClassParameter(Tree tr)
+        {
+
+        }
+
+        public String Name
+        {
+            get
+            {
+                return fname;
+            }
+        }
+
+        public static ClassParameter GetParam(String paramname)
+        {
+            return null;
+        }
+    }
+
+    //---------------------------------------------------------------------------
+    // Допустимое значение переменной дерева сериализации
+    public struct VarValidValue
+    {
+        public int value;
+        public Version1C ver1C;
+        public int globalvalue;
+    }
+
+    //---------------------------------------------------------------------------
+    // Классы
+    public class Class : MetaBase
+    {
+        public Guid fuid;
+        public List<VarValidValue> fvervalidvalues;
+        public SortedDictionary<ClassParameter, int> fparamvalues;
+        public static SortedDictionary<Guid, Class> map;
+        public List<MetaStandartAttribute> fstandartattributes; // Стандартные реквизиты
+        public List<MetaStandartTabularSection> fstandarttabularsections; // Стандартные табличные части
+
+        public Class(Tree tr)
+        { }
+
+        public Guid UID
+        {
+            get
+            {
+                return fuid;
+            }
+        }
+
+        public List<VarValidValue> vervalidvalues
+        {
+            get
+            {
+                return fvervalidvalues;
+            }
+        }
+
+        public SortedDictionary<ClassParameter, int> paramvalues
+        {
+            get
+            {
+                return fparamvalues;
+            }
+        }
+
+        public List<MetaStandartAttribute> standartattributes
+        {
+            get
+            {
+                return fstandartattributes;
+            }
+        }
+
+        public List<MetaStandartTabularSection> standarttabularsections
+        {
+            get
+            {
+                return fstandarttabularsections;
+            }
+        }
+
+        public int GetParamValue(ClassParameter p)
+        {
+            return 0;
+        }
+
+        public static Class GetClass(Guid id)
+        {
+            return null;
+        }
+
+
+    }
+
+
 
 
     //---------------------------------------------------------------------------
